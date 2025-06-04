@@ -128,18 +128,18 @@ def explain_VLM(prompt, raw_image, model, tokenizer, max_new_tokens=100, p=None)
     # make a combination between tokens and pixel_values (transform to patches first)
     X = torch.cat((image_token_ids, inputs.input_ids), 1).unsqueeze(1)
     try:
-        explainer = shap.Explainer(get_model_prediction, custom_masker, silent=True, max_evals=600)
+        explainer = shap.Explainer(get_model_prediction, custom_masker, silent=True, max_evals=300)
         shap_values = explainer(X)[0]
     except ValueError:
         try:
-            explainer = shap.Explainer(get_model_prediction, custom_masker, silent=True, max_evals=700)
+            explainer = shap.Explainer(get_model_prediction, custom_masker, silent=True, max_evals=400)
             shap_values = explainer(X)[0]
         except ValueError:
             try:
-                explainer = shap.Explainer(get_model_prediction, custom_masker, silent=True, max_evals=800)
+                explainer = shap.Explainer(get_model_prediction, custom_masker, silent=True, max_evals=500)
                 shap_values = explainer(X)[0]
             except ValueError:
-                explainer = shap.Explainer(get_model_prediction, custom_masker, silent=True, max_evals=900)
+                explainer = shap.Explainer(get_model_prediction, custom_masker, silent=True, max_evals=600)
                 shap_values = explainer(X)[0]
 
     if len(shap_values.values.shape) == 2:

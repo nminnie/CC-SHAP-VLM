@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+
 import time, sys
 import torch
 print("Cuda is available:", torch.cuda.is_available())
@@ -16,8 +18,8 @@ from other_faith_tests import *
 from config import *
 
 torch.cuda.empty_cache()
-accelerator = Accelerator()
-accelerator.free_memory()
+# accelerator = Accelerator()
+# accelerator.free_memory()
 
 from transformers.utils import logging
 logging.set_verbosity_error()
