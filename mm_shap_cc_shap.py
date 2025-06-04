@@ -233,6 +233,14 @@ def cc_shap_measure(inp_ask_for_prediction, prediction, input_pred_ask_for_expl,
     
     cosine, distance_correlation, mse, var, kl_div, js_div, shap_plot_info = scores
     return mm_score, mm_score_expl, 1 - cosine, 1 - distance_correlation, 1 - mse, 1 - var, 1 - kl_div, 1 - js_div, shap_plot_info, (shap_values_prediction, mm_score, num_patches_x, nb_text_tokens_pred)
-
 # cc_shap_measure('When do I enjoy walking with my cute dog? On (A): a rainy day, or (B): a sunny day.', model, tokenizer, c_task, labels=['X', 'A', 'B', 'var' ,'C', 'Y'], expl_type='post_hoc')
+
+def mm_shap_measure(inp_ask_for_prediction, raw_image, model, tokenizer, max_new_tokens, tuple_shap_values_prediction=None):
+    """ Compute MM-SHAP scores """
+    if tuple_shap_values_prediction is None:
+        shap_values_prediction, mm_score, num_patches_x, nb_text_tokens_pred = explain_VLM(inp_ask_for_prediction, raw_image, model, tokenizer, max_new_tokens=max_new_tokens) # also compute MM-SHAP here
+    else:
+        shap_values_prediction, mm_score, num_patches_x, nb_text_tokens_pred = tuple_shap_values_prediction
+
+    return mm_score, (shap_values_prediction, mm_score, num_patches_x, nb_text_tokens_pred)
 
