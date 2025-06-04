@@ -5,13 +5,13 @@ TESTS = [
     'cc_shap-posthoc',
     # 'turpin',
     # 'lanham',
-    'cc_shap-cot',
+    # 'cc_shap-cot',
 ]
 
 MODELS = {
-    'bakllava': 'llava-hf/bakLlava-v1-hf',
-    'llava_mistral': 'llava-hf/llava-v1.6-mistral-7b-hf',
-    'llava_vicuna': 'llava-hf/llava-v1.6-vicuna-7b-hf',
+    'bakllava': '/work/tc067/tc067/s2737499/.cache/huggingface/hub/models--llava-hf--bakLlava-v1-hf/snapshots/f038f156966ff4d24078b260e9e9761fd480d325',
+    'llava_mistral': '/work/tc067/tc067/s2737499/.cache/huggingface/hub/models--llava-hf--llava-v1.6-mistral-7b-hf/snapshots/a1d521368f8d353afa4da2ed2bb1bf646ef1ff5f',
+    'llava_vicuna': '/work/tc067/tc067/s2737499/.cache/huggingface/hub/models--llava-hf--llava-v1.6-vicuna-7b-hf/snapshots/0524afe4453163103dcefe78eb0a58b3f6424eac',
     'llama2-13b-chat': 'meta-llama/Llama-2-13b-chat-hf',
 }
 

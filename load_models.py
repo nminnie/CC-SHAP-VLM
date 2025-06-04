@@ -21,7 +21,8 @@ def load_models(model_name):
             model = LlavaNextForConditionalGeneration.from_pretrained(MODELS[model_name], torch_dtype=torch.float16, 
                 low_cpu_mem_usage=True,
                 use_flash_attention_2=False, # set to true for speedups and install flash-attn
-                quantization_config = quantization_config
+                device_map="auto",
+              # quantization_config = quantization_config
             ) # .to("cuda") not needed for bitsandbytes anymore
         revision_id = "0524afe4453163103dcefe78eb0a58b3f6424eac"
     else:
@@ -38,9 +39,11 @@ def load_models(model_name):
             model = ModelClass.from_pretrained(MODELS[model_name], torch_dtype=torch.float16, 
                 low_cpu_mem_usage=True, # device_map="auto",
                 use_flash_attention_2=False, # set to true for speedups and install flash-attn
-                revision=revision_id,
-            ).to("cuda")
-    tokenizer = AutoProcessor.from_pretrained(MODELS[model_name], revision=revision_id)
+                device_map="auto",
+                # revision=revision_id,
+            ) #.to("cuda")
+    tokenizer = AutoProcessor.from_pretrained(MODELS[model_name])
+            # revision=revision_id)
     print(f"Done loading model and tokenizer after {time.time()-t1:.2f}s.")
 
     return model, tokenizer
