@@ -22,8 +22,8 @@ LABELS = {
 }
 
 MULT_CHOICE_DATA = {
-    "foil_it": ["COCO/all_images/",
-                "foil-it.json"],
+    # "foil_it": ["COCO/all_images/",
+    #             "foil-it.json"],
     # "existence": ["foil-benchmark-old/counting++/images/",
     #               "foil-benchmark/existence/existence_benchmark.test_mturk.json"],
     # "plurals": ["foil-benchmark/plurals/test_images/",
@@ -51,4 +51,5 @@ OPEN_ENDED_DATA = {
     # "vqa": ["COCO/all_images/", "VQA2.0/v2_OpenEnded_mscoco_val2014_questions.json"],
     # "gqa": ["GQA/images/", "GQA/val_all_questions.json"],
     # "gqa_balanced": ["GQA/images/", "GQA/val_balanced_questions.json"],
+    "xgqa": ["xGQA/testdev_balanced_images/", "xGQA/testdev_balanced_questions.json"]
 }

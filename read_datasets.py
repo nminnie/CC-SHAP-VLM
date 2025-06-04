@@ -6,7 +6,7 @@ import numpy as np
 def read_data(instrument, foils_path, images_path, data_root):
     if instrument == "vqa":
         foils_data = read_vqa(foils_path, data_root)
-    elif instrument in ["gqa", "gqa_balanced"]:
+    elif instrument in ["gqa", "gqa_balanced", "xgqa"]:
         foils_data = read_gqa(foils_path)
     elif instrument == "nlvr2":
         foils_data = read_nlvr2(foils_path, images_path)
