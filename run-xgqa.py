@@ -1,9 +1,8 @@
+#!/usr/bin/env python3
+
 import time, sys
 import torch
 print("Cuda is available:", torch.cuda.is_available())
-from accelerate import Accelerator
-import json
-from transformers import AutoTokenizer, AutoModelForCausalLM
 from PIL import Image
 import random, os
 from tqdm import tqdm
@@ -11,7 +10,7 @@ from tqdm import tqdm
 from load_models import load_models
 from read_datasets import read_data
 from generation_and_prompting import *
-from mm_shap_cc_shap import *
+from mm_shap_cc_shap import mm_shap_measure
 from config import *
 
 torch.cuda.empty_cache()
@@ -69,7 +68,7 @@ if __name__ == '__main__':
 
     print("Done preparing data. Running test...")
 
-    for k, formatted_sample, correct_answer, wrong_answer, image_path in tqdm(zip(range(len(formatted_samples)), formatted_samples, correct_answers, wrong_answers, image_paths)):
+    for k, formatted_sample, correct_answer, image_path in tqdm(zip(range(len(formatted_samples)), formatted_samples, correct_answers, image_paths)):
         raw_image = Image.open(image_path) # read image
         if c_task in MULT_CHOICE_DATA.keys():
             labels = LABELS['binary']
