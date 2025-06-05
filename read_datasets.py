@@ -109,6 +109,7 @@ def read_gqa(gqa_path):
     foils_data = {}
     split = 'val'
     np.random.seed(0)
+    random.seed(0)
 
     with open(gqa_path) as json_file:
         gqa_data = json.load(json_file)

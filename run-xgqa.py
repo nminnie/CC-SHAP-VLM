@@ -68,7 +68,10 @@ if __name__ == '__main__':
 
     print("Done preparing data. Running test...")
 
-    for k, formatted_sample, correct_answer, image_path in tqdm(zip(range(len(formatted_samples)), formatted_samples, correct_answers, image_paths)):
+    total_vlm_time = 0
+    total_mm_shap_time = 0
+
+    for k, (formatted_sample, correct_answer, image_path) in enumerate(tqdm(zip(formatted_samples, correct_answers, image_paths), total=num_samples)):
         raw_image = Image.open(image_path) # read image
         if c_task in MULT_CHOICE_DATA.keys():
             labels = LABELS['binary']
@@ -78,11 +81,20 @@ if __name__ == '__main__':
             labels = LABELS[c_task]
 
         inp_ask_for_prediction = prompt_answer_with_input(formatted_sample, c_task)
+
+        start_vlm = time.time()
         prediction = vlm_predict(inp_ask_for_prediction, raw_image, model, tokenizer, c_task, labels=labels)
+        end_vlm = time.time()
+        total_vlm_time += (end_vlm - start_vlm)
+
         accuracy_sample = evaluate_prediction(prediction, correct_answer, c_task)
         accuracy += accuracy_sample
 
+        start_mm_time = time.time()
         mm_score_sample, tuple_shap_values_prediction = mm_shap_measure(inp_ask_for_prediction, raw_image, model, tokenizer, max_new_tokens=5, tuple_shap_values_prediction=None)
+        end_mm_time = time.time()
+        total_mm_shap_time += (end_mm_time - start_mm_time)
+
         mm_score += mm_score_sample
 
     print(f"Ran {TESTS} on {c_task} {count} samples with model {model_name}. Reporting results.\n")
@@ -91,3 +103,5 @@ if __name__ == '__main__':
 
     c = time.time()-t1
     print(f"\nThis script ran for {c // 86400:.2f} days, {c // 3600 % 24:.2f} hours, {c // 60 % 60:.2f} minutes, {c % 60:.2f} seconds.")
+    print("VLM generation time:", total_vlm_time)
+    print("MM-SHAP computation time:", total_mm_shap_time)
