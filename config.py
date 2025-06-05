@@ -47,9 +47,11 @@ MULT_CHOICE_DATA = {
     # "mscoco": ["COCO/all_images/", "foil-benchmark/orig_foil/foil_it_test_mturk.json"],
 }
 
+LANG = "pt"
+
 OPEN_ENDED_DATA = {
     # "vqa": ["COCO/all_images/", "VQA2.0/v2_OpenEnded_mscoco_val2014_questions.json"],
     # "gqa": ["GQA/images/", "GQA/val_all_questions.json"],
     # "gqa_balanced": ["GQA/images/", "GQA/val_balanced_questions.json"],
-    "xgqa": ["xGQA/testdev_balanced_images/", "xGQA/testdev_balanced_questions.json"]
+    "xgqa": ["xGQA/testdev_balanced_images/", f"xGQA/testdev_balanced_questions_{LANG}.json"]
 }

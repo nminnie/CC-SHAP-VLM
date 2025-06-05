@@ -12,6 +12,7 @@ from read_datasets import read_data
 from generation_and_prompting import *
 from mm_shap_cc_shap import mm_shap_measure
 from config import *
+from translate import load_translation_model, translate_text
 
 torch.cuda.empty_cache()
 
@@ -31,7 +32,7 @@ save_json = int(sys.argv[4])
 data_root = sys.argv[5]
 
 model, tokenizer = load_models(model_name)
-
+nllb_model, nllb_tokenizer = load_translation_model()
 
 if __name__ == '__main__':
     formatted_samples, correct_answers, wrong_answers, image_paths = [], [], [], []
@@ -80,18 +81,24 @@ if __name__ == '__main__':
         else:
             labels = LABELS[c_task]
 
-        inp_ask_for_prediction = prompt_answer_with_input(formatted_sample, c_task)
+        inp_ask_for_prediction = prompt_answer_with_input(formatted_sample, c_task, LANG)
 
         start_vlm = time.time()
         prediction = vlm_predict(inp_ask_for_prediction, raw_image, model, tokenizer, c_task, labels=labels)
         end_vlm = time.time()
         total_vlm_time += (end_vlm - start_vlm)
+        print("Raw output:", prediction)
 
+        if LANG != "en": # Translate model response
+            prediction = translate_text(nllb_model, nllb_tokenizer, prediction, src_lang=LANG, tgt_lang="en")
+        print("Translated output:", prediction)
         accuracy_sample = evaluate_prediction(prediction, correct_answer, c_task)
+        print("Accuracy:", accuracy_sample)
         accuracy += accuracy_sample
 
         start_mm_time = time.time()
-        mm_score_sample, tuple_shap_values_prediction = mm_shap_measure(inp_ask_for_prediction, raw_image, model, tokenizer, max_new_tokens=5, tuple_shap_values_prediction=None)
+        # mm_score_sample, tuple_shap_values_prediction = mm_shap_measure(inp_ask_for_prediction, raw_image, model, tokenizer, max_new_tokens=5, tuple_shap_values_prediction=None)
+        mm_score_sample, _ = 0, 0
         end_mm_time = time.time()
         total_mm_shap_time += (end_mm_time - start_mm_time)
 
