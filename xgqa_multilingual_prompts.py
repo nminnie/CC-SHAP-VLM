@@ -25,8 +25,8 @@ questions = {
     "zh": "\u8fd9\u4e9b\u88e4\u5b50\u662f\u4ec0\u4e48\u989c\u8272\u7684\uff1f"
 }
 
-def generate_answer(question):
-    inp_ask_for_prediction = prompt_answer_with_input(question, c_task)
+def generate_answer(question, lang):
+    inp_ask_for_prediction = prompt_answer_with_input(question, c_task, lang)
     print(inp_ask_for_prediction)
     prediction = vlm_predict(inp_ask_for_prediction, raw_image, model, tokenizer, c_task, labels=None)
     return prediction
@@ -34,7 +34,7 @@ def generate_answer(question):
 start_time = time.time()
 for lang, question in questions.items():
     print("\nLanguage:", lang)
-    output = generate_answer(question)
+    output = generate_answer(question, lang)
     print("OUTPUT:", output)
 
 end_time = time.time()
