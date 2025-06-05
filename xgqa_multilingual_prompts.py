@@ -1,4 +1,7 @@
+#!/usr/bin/env python3
+
 import sys
+import time
 from PIL import Image
 
 from generation_and_prompting import prompt_answer_with_input, vlm_predict
@@ -6,7 +9,7 @@ from load_models import load_models
 
 c_task = sys.argv[1]
 model_name = sys.argv[2]
-# model, tokenizer = load_models(model_name)
+model, tokenizer = load_models(model_name)
 
 image_path = "./data/xGQA/testdev_balanced_images/n446242.jpg"
 raw_image = Image.open(image_path)
@@ -25,11 +28,14 @@ questions = {
 def generate_answer(question):
     inp_ask_for_prediction = prompt_answer_with_input(question, c_task)
     print(inp_ask_for_prediction)
-    # prediction = vlm_predict(inp_ask_for_prediction, raw_image, model, tokenizer, c_task, labels=None)
-    prediction = "red"
+    prediction = vlm_predict(inp_ask_for_prediction, raw_image, model, tokenizer, c_task, labels=None)
     return prediction
 
+start_time = time.time()
 for lang, question in questions.items():
     print("\nLanguage:", lang)
     output = generate_answer(question)
     print("OUTPUT:", output)
+
+end_time = time.time()
+print("Total inference time:", end_time - start_time)
