@@ -25,16 +25,29 @@ B_SYS, E_SYS = "<<SYS>>\n", "\n<</SYS>>\n\n"
 system_prompt_llama = f"{B_SYS}You are a helpful chat assistant and will answer the user's questions carefully.{E_SYS}"
 
 phrase_answer_multiple_choice = "The best answer is:"
-phrase_answer_open_ended = "The best short answer is:"
+# phrase_answer_open_ended = "The best short answer is:"
 
-def prompt_answer(c_task):
+phrase_answer_open_ended = {
+    "bn": "সবচেয়ে ভালো সংক্ষিপ্ত উত্তর হল:",
+    "de": "Die beste kurze Antwort ist:",
+    "en": "The best short answer is:",
+    "id": "Jawaban singkat terbaiknya adalah:",
+    "ko": "가장 짧은 대답은 다음과 같습니다.",
+    "pt": "A melhor resposta curta é:",
+    "ru": "Лучший краткий ответ:",
+    "zh": "最好的简短答案是："
+}
+
+def prompt_answer(c_task, lang):
     if c_task in OPEN_ENDED_DATA.keys():
-        return f"""{E_INST if is_chat_model else ''}{phrase_answer_open_ended}\n"""
+        if lang is not None:
+            return f"""{E_INST if is_chat_model else ''}{phrase_answer_open_ended[lang]}\n"""
+        return f"""{E_INST if is_chat_model else ''}{phrase_answer_open_ended["en"]}\n"""
     else:
         return f"""{E_INST if is_chat_model else ''}{phrase_answer_multiple_choice} ("""
     
-def prompt_answer_with_input(inputt, c_task):
-    return f"""{B_INST_IMG if is_chat_model else ''}{inputt}{prompt_answer(c_task)}"""
+def prompt_answer_with_input(inputt, c_task, lang=None):
+    return f"""{B_INST_IMG if is_chat_model else ''}{inputt}{prompt_answer(c_task, lang)}"""
 
 def prompt_answer_after_cot(c_task):
     if c_task in OPEN_ENDED_DATA.keys():
