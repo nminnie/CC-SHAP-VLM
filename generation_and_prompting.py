@@ -27,26 +27,15 @@ system_prompt_llama = f"{B_SYS}You are a helpful chat assistant and will answer 
 phrase_answer_multiple_choice = "The best answer is:"
 # phrase_answer_open_ended = "The best short answer is:"
 
-# phrase_answer_open_ended = {
-#     "bn": "সবচেয়ে ভালো সংক্ষিপ্ত উত্তর হল:",
-#     "de": "Die beste kurze Antwort ist:",
-#     "en": "The best short answer is:",
-#     "id": "Jawaban singkat terbaiknya adalah:",
-#     "ko": "가장 좋은 짧은 답변은:",
-#     "pt": "A melhor resposta curta é:",
-#     "ru": "Лучший краткий ответ:",
-#     "zh": "最好的简短答案是："
-# }
-
 phrase_answer_open_ended = {
-    "bn": "The best short answer in Bengali is:",
-    "de": "The best short answer in German is:",
-    "en": "The best short answer in English is:",
-    "id": "The best short answer in Indonesian is:",
-    "ko": "The best short answer in Korean is:",
-    "pt": "The best short answer in Portuguese is:",
-    "ru": "The best short answer in Russian is:",
-    "zh": "The best short answer in Chinese is:"
+    "bn": "সবচেয়ে ভালো সংক্ষিপ্ত উত্তর হল:",
+    "de": "Die beste kurze Antwort ist:",
+    "en": "The best short answer is:",
+    "id": "Jawaban singkat terbaiknya adalah:",
+    "ko": "가장 좋은 짧은 답변은:",
+    "pt": "A melhor resposta curta é:",
+    "ru": "Лучший краткий ответ:",
+    "zh": "最好的简短答案是："
 }
 
 def prompt_answer(c_task, lang):
