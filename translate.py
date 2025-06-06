@@ -2,7 +2,6 @@ import sys
 import json
 import torch
 from transformers import AutoTokenizer, AutoModelForSeq2SeqLM
-from generation_and_prompting import evaluate_prediction
 
 
 lang_codes = {
@@ -37,6 +36,13 @@ def translate_text(model, tokenizer, text, src_lang, tgt_lang="en"):
     return translation
 
 
+def evaluate_translated_prediction(translated_prediction, correct_answer):
+    translated_prediction = translated_prediction.lower()
+    correct_answer = correct_answer.lower()
+
+    return 1 if correct_answer in translated_prediction else 0
+
+
 def translate_model_preds(model, tokenizer, results_file, src_lang, tgt_lang="en"):
     with open(results_file) as f:
         results = json.load(f)
@@ -51,7 +57,7 @@ def translate_model_preds(model, tokenizer, results_file, src_lang, tgt_lang="en
         translation = translate_text(model, tokenizer, prediction, src_lang, tgt_lang)
         result["translated_prediction"] = translation
 
-        accuracy = evaluate_prediction(translation, correct_answer, c_task="xgqa")
+        accuracy = evaluate_translated_prediction(translation, correct_answer)
         result["accuracy"] = accuracy
 
         results[k] = result
