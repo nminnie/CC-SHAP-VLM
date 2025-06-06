@@ -128,18 +128,18 @@ def explain_VLM(prompt, raw_image, model, tokenizer, max_new_tokens=100, p=None)
     # make a combination between tokens and pixel_values (transform to patches first)
     X = torch.cat((image_token_ids, inputs.input_ids), 1).unsqueeze(1)
     try:
-        explainer = shap.Explainer(get_model_prediction, custom_masker, silent=True, max_evals=300)
+        explainer = shap.Explainer(get_model_prediction, custom_masker, silent=True, max_evals=100)
         shap_values = explainer(X)[0]
     except ValueError:
         try:
-            explainer = shap.Explainer(get_model_prediction, custom_masker, silent=True, max_evals=400)
+            explainer = shap.Explainer(get_model_prediction, custom_masker, silent=True, max_evals=150)
             shap_values = explainer(X)[0]
         except ValueError:
             try:
-                explainer = shap.Explainer(get_model_prediction, custom_masker, silent=True, max_evals=500)
+                explainer = shap.Explainer(get_model_prediction, custom_masker, silent=True, max_evals=200)
                 shap_values = explainer(X)[0]
             except ValueError:
-                explainer = shap.Explainer(get_model_prediction, custom_masker, silent=True, max_evals=600)
+                explainer = shap.Explainer(get_model_prediction, custom_masker, silent=True, max_evals=250)
                 shap_values = explainer(X)[0]
 
     if len(shap_values.values.shape) == 2:
@@ -242,5 +242,5 @@ def mm_shap_measure(inp_ask_for_prediction, raw_image, model, tokenizer, max_new
     else:
         shap_values_prediction, mm_score, num_patches_x, nb_text_tokens_pred = tuple_shap_values_prediction
 
-    return mm_score, (shap_values_prediction, mm_score, num_patches_x, nb_text_tokens_pred)
+    return shap_values_prediction, mm_score, num_patches_x, nb_text_tokens_pred
 

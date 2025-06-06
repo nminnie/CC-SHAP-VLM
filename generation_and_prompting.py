@@ -38,7 +38,7 @@ phrase_answer_open_ended = {
     "zh": "最好的简短答案是："
 }
 
-def prompt_answer(c_task, lang):
+def prompt_answer(c_task, lang=None):
     if c_task in OPEN_ENDED_DATA.keys():
         if lang is not None:
             return f"""{E_INST if is_chat_model else ''}{phrase_answer_open_ended[lang]}\n"""

@@ -1,4 +1,4 @@
-max_new_tokens = 100
+max_new_tokens = 10
 visualize = True
 TESTS = [
     # 'atanasova_counterfactual',
@@ -47,7 +47,7 @@ MULT_CHOICE_DATA = {
     # "mscoco": ["COCO/all_images/", "foil-benchmark/orig_foil/foil_it_test_mturk.json"],
 }
 
-LANG = "pt"
+LANG = "en"
 
 OPEN_ENDED_DATA = {
     # "vqa": ["COCO/all_images/", "VQA2.0/v2_OpenEnded_mscoco_val2014_questions.json"],
