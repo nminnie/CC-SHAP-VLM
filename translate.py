@@ -54,7 +54,7 @@ def translate_model_preds(model, tokenizer, results_file, src_lang, tgt_lang="en
         correct_answer = result["correct_answer"]
         src_lang = result["prediction_lang"]
 
-        if src_lang == tgt_lang:
+        if src_lang == "" or src_lang == tgt_lang:
             continue
         translation = translate_text(model, tokenizer, prediction, src_lang, tgt_lang)
         result["translated_prediction"] = translation

@@ -13,7 +13,10 @@ def load_lang_detector():
 
 
 def detect_lang(detector, text):
-    language = detector.detect_language_of(text)
-    lang_code = language.iso_code_639_1.name.lower()
+    try:
+        language = detector.detect_language_of(text)
+        lang_code = language.iso_code_639_1.name.lower()
+    except Exception:
+        lang_code = ""
 
     return lang_code
