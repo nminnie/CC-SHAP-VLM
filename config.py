@@ -1,3 +1,5 @@
+import sys
+
 max_new_tokens = 10
 visualize = True
 TESTS = [
@@ -47,8 +49,7 @@ MULT_CHOICE_DATA = {
     # "mscoco": ["COCO/all_images/", "foil-benchmark/orig_foil/foil_it_test_mturk.json"],
 }
 
-LANG = "en"
-
+LANG = sys.argv[6]
 OPEN_ENDED_DATA = {
     # "vqa": ["COCO/all_images/", "VQA2.0/v2_OpenEnded_mscoco_val2014_questions.json"],
     # "gqa": ["GQA/images/", "GQA/val_all_questions.json"],

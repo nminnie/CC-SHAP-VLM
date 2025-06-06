@@ -13,7 +13,6 @@ from read_datasets import read_data
 from generation_and_prompting import *
 from mm_shap_cc_shap import mm_shap_measure
 from config import *
-from translate import load_translation_model, translate_text
 
 torch.cuda.empty_cache()
 
@@ -31,6 +30,7 @@ model_name = sys.argv[2]
 num_samples = int(sys.argv[3])
 save_json = int(sys.argv[4])
 data_root = sys.argv[5]
+LANG = sys.argv[6]
 
 model, tokenizer = load_models(model_name)
 
@@ -97,14 +97,14 @@ if __name__ == '__main__':
         accuracy += accuracy_sample
 
         start_mm_time = time.time()
-        shap_values_prediction, mm_score_sample, num_patches_x, nb_text_tokens_pred = mm_shap_measure(inp_ask_for_prediction, raw_image, model, tokenizer, max_new_tokens=10, tuple_shap_values_prediction=None)
+        shap_values_prediction, mm_score_sample, num_image_patches, num_text_tokens = mm_shap_measure(inp_ask_for_prediction, raw_image, model, tokenizer, max_new_tokens=10, tuple_shap_values_prediction=None)
         end_mm_time = time.time()
         total_mm_shap_time += (end_mm_time - start_mm_time)
 
         mm_score += mm_score_sample
         print("MM score:", mm_score_sample)
-        print("Num image patches:", num_patches_x)
-        print("Num text tokens:", nb_text_tokens_pred)
+        print("Num image patches:", num_image_patches)
+        print("Num text tokens:", num_text_tokens)
         print("SHAP values:", shap_values_prediction.values.shape)
 
         res_dict[f"{c_task}_{model_name}_{LANG}_{k}"] = {
@@ -116,8 +116,8 @@ if __name__ == '__main__':
             "translated_prediction": "",
             "accuracy": accuracy_sample,
             "mm_score": mm_score_sample,
-            "num_image_patches": num_patches_x,
-            "num_text_tokens": nb_text_tokens_pred,
+            "num_image_patches": num_image_patches,
+            "num_text_tokens": num_text_tokens,
             # "shap_values": shap_values_prediction.values.tolist()
         }
 
