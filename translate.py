@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+
 import sys
 import json
 import torch
@@ -66,7 +68,7 @@ def translate_model_preds(model, tokenizer, results_file, src_lang, tgt_lang="en
 
 
 if __name__ == "__main__":
-    model_path = "/work/tc067/tc067/s2737499/.cache/huggingface/hub/models--facebook--nllb-200-1.3B/snapshots/b0de46b488af0cf31749cd8da5ed3171e11b2309"
+    model_path = "/work/tc067/tc067/s2737499/.cache/huggingface/hub/models--facebook--nllb-200-3.3B/snapshots/1a07f7d195896b2114afcb79b7b57ab512e7b43e"
     model, tokenizer = load_translation_model(model_path)
 
     results_file = sys.argv[1]
