@@ -13,6 +13,7 @@ from read_datasets import read_data
 from generation_and_prompting import *
 from mm_shap_cc_shap import mm_shap_measure
 from config import *
+from detect_language import load_lang_detector, detect_lang
 
 torch.cuda.empty_cache()
 
@@ -33,6 +34,7 @@ data_root = sys.argv[5]
 LANG = sys.argv[6]
 
 model, tokenizer = load_models(model_name)
+lang_detector = load_lang_detector()
 
 if __name__ == '__main__':
     res_dict = {}
@@ -96,6 +98,8 @@ if __name__ == '__main__':
         print("Accuracy:", accuracy_sample)
         accuracy += accuracy_sample
 
+        prediction_lang = detect_lang(lang_detector, prediction)
+
         start_mm_time = time.time()
         shap_values_prediction, mm_score_sample, num_image_patches, num_text_tokens = mm_shap_measure(inp_ask_for_prediction, raw_image, model, tokenizer, max_new_tokens=10, tuple_shap_values_prediction=None)
         end_mm_time = time.time()
@@ -113,6 +117,7 @@ if __name__ == '__main__':
             "prompt": inp_ask_for_prediction,
             "correct_answer": correct_answer,
             "prediction": prediction,
+            "prediction_lang": prediction_lang,
             "translated_prediction": "",
             "accuracy": accuracy_sample,
             "mm_score": mm_score_sample,
