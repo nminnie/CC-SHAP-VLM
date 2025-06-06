@@ -33,7 +33,6 @@ save_json = int(sys.argv[4])
 data_root = sys.argv[5]
 
 model, tokenizer = load_models(model_name)
-# nllb_model, nllb_tokenizer = load_translation_model()
 
 if __name__ == '__main__':
     res_dict = {}
@@ -84,16 +83,15 @@ if __name__ == '__main__':
             labels = LABELS[c_task]
 
         inp_ask_for_prediction = prompt_answer_with_input(formatted_sample, c_task, LANG)
+        print("Prompt:", inp_ask_for_prediction)
+        print("Correct answer:", correct_answer)
 
         start_vlm = time.time()
         prediction = vlm_predict(inp_ask_for_prediction, raw_image, model, tokenizer, c_task, labels=labels)
         end_vlm = time.time()
         total_vlm_time += (end_vlm - start_vlm)
-        print("Output:", prediction)
+        print("Prediction:", prediction)
 
-        # if LANG != "en": # Translate model response
-        #     prediction = translate_text(nllb_model, nllb_tokenizer, prediction, src_lang=LANG, tgt_lang="en")
-        # print("Translated output:", prediction)
         accuracy_sample = evaluate_prediction(prediction, correct_answer, c_task)
         print("Accuracy:", accuracy_sample)
         accuracy += accuracy_sample
@@ -104,18 +102,23 @@ if __name__ == '__main__':
         total_mm_shap_time += (end_mm_time - start_mm_time)
 
         mm_score += mm_score_sample
+        print("MM score:", mm_score_sample)
+        print("Num image patches:", num_patches_x)
+        print("Num text tokens:", nb_text_tokens_pred)
+        print("SHAP values:", shap_values_prediction.values.shape)
 
         res_dict[f"{c_task}_{model_name}_{LANG}_{k}"] = {
             "image_path": image_path,
-            "sample": formatted_sample,
+            "question": formatted_sample,
             "prompt": inp_ask_for_prediction,
             "correct_answer": correct_answer,
             "prediction": prediction,
+            "translated_prediction": "",
             "accuracy": accuracy_sample,
             "mm_score": mm_score_sample,
-            "num_patches": num_patches_x,
-            "num_tokens_pred": nb_text_tokens_pred,
-            "shap_values": shap_values_prediction
+            "num_image_patches": num_patches_x,
+            "num_text_tokens": nb_text_tokens_pred,
+            # "shap_values": shap_values_prediction.values.tolist()
         }
 
     save_dir = "results"
