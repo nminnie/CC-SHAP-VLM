@@ -31,7 +31,7 @@ def load_translation_model(model_name):
 
 def translate_text(model, tokenizer, text, src_lang, tgt_lang="en"):
     tokenizer.src_lang = lang_codes[src_lang]
-    inputs = tokenizer(text, return_tensors="pt")
+    inputs = tokenizer(text, return_tensors="pt").to("cuda")
     output = model.generate(**inputs, forced_bos_token_id=tokenizer.lang_code_to_id[lang_codes[tgt_lang]])
     translation = tokenizer.decode(output[0], skip_special_tokens=True)
 
