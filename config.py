@@ -1,6 +1,6 @@
 import sys
 
-MAX_NEW_TOKENS = 15
+MAX_NEW_TOKENS = 10
 visualize = True
 TESTS = [
     # 'atanasova_counterfactual',
