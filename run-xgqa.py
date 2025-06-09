@@ -71,10 +71,6 @@ if __name__ == '__main__':
             count += 1
 
     print("Done preparing data. Running test...")
-
-    total_vlm_time = 0
-    total_mm_shap_time = 0
-
     for k, (formatted_sample, correct_answer, image_path) in enumerate(tqdm(zip(formatted_samples, correct_answers, image_paths), total=num_samples)):
         raw_image = Image.open(image_path) # read image
         if c_task in MULT_CHOICE_DATA.keys():
@@ -88,22 +84,18 @@ if __name__ == '__main__':
         print("Prompt:", inp_ask_for_prediction)
         print("Correct answer:", correct_answer)
 
-        start_vlm = time.time()
-        prediction = vlm_predict(inp_ask_for_prediction, raw_image, model, tokenizer, c_task, labels=labels)
-        end_vlm = time.time()
-        total_vlm_time += (end_vlm - start_vlm)
+        # Generate model response and compute MM-SHAP scores
+        shap_values_prediction, mm_score_sample, num_image_patches, num_text_tokens, input_ids, output_ids = mm_shap_measure(inp_ask_for_prediction, raw_image, model, tokenizer, max_new_tokens=MAX_NEW_TOKENS, tuple_shap_values_prediction=None)
+        prediction = tokenizer.decode(output_ids[0], skip_special_tokens=False)
+        prediction = prediction[:-len("</s>")]
         print("Prediction:", prediction)
 
+        # Evaluate model response
+        prediction_lang = detect_lang(lang_detector, prediction)
+        print("Pred language:", prediction_lang)
         accuracy_sample = evaluate_prediction(prediction, correct_answer, c_task)
         print("Accuracy:", accuracy_sample)
         accuracy += accuracy_sample
-
-        prediction_lang = detect_lang(lang_detector, prediction)
-
-        start_mm_time = time.time()
-        shap_values_prediction, mm_score_sample, num_image_patches, num_text_tokens = mm_shap_measure(inp_ask_for_prediction, raw_image, model, tokenizer, max_new_tokens=10, tuple_shap_values_prediction=None)
-        end_mm_time = time.time()
-        total_mm_shap_time += (end_mm_time - start_mm_time)
 
         mm_score += mm_score_sample
         print("MM score:", mm_score_sample)
@@ -116,6 +108,8 @@ if __name__ == '__main__':
             "question": formatted_sample,
             "prompt": inp_ask_for_prediction,
             "correct_answer": correct_answer,
+            "input_ids": input_ids[0].tolist(),
+            "output_ids": output_ids[0].tolist(),
             "prediction": prediction,
             "prediction_lang": prediction_lang,
             "translated_prediction": "",
@@ -123,7 +117,7 @@ if __name__ == '__main__':
             "mm_score": mm_score_sample,
             "num_image_patches": num_image_patches,
             "num_text_tokens": num_text_tokens,
-            # "shap_values": shap_values_prediction.values.tolist()
+            "shap_values": shap_values_prediction.values.tolist()
         }
 
     save_dir = "results"
@@ -139,5 +133,3 @@ if __name__ == '__main__':
 
     c = time.time()-t1
     print(f"\nThis script ran for {c // 86400:.2f} days, {c // 3600 % 24:.2f} hours, {c // 60 % 60:.2f} minutes, {c % 60:.2f} seconds.")
-    print("VLM generation time:", total_vlm_time)
-    print("MM-SHAP computation time:", total_mm_shap_time)

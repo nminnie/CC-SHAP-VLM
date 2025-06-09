@@ -147,7 +147,7 @@ def explain_VLM(prompt, raw_image, model, tokenizer, max_new_tokens=100, p=None)
 
     mm_score = compute_mm_score(image_token_ids.shape[1], shap_values)
 
-    return shap_values, mm_score, p, nb_text_tokens
+    return shap_values, mm_score, p, nb_text_tokens, inputs.input_ids, output_ids
 
 # prompt = "USER: <image>\nWhat is this? (A): a pizza, or (B): a dog. \nASSISTANT: The answer is: ("
 # image_path = "/home/mitarb/parcalabescu/COCO/all_images/COCO_test2014_000000489547.jpg"
@@ -224,10 +224,10 @@ def cc_shap_measure(inp_ask_for_prediction, prediction, input_pred_ask_for_expl,
     
     # make sure the explanation uses the same number of image patches as before (for prediction)
     if tuple_shap_values_prediction is None:
-        shap_values_prediction, mm_score, num_patches_x, nb_text_tokens_pred = explain_VLM(inp_ask_for_prediction, raw_image, model, tokenizer, max_new_tokens=1) # also compute MM-SHAP here
+        shap_values_prediction, mm_score, num_patches_x, nb_text_tokens_pred, _, _ = explain_VLM(inp_ask_for_prediction, raw_image, model, tokenizer, max_new_tokens=1) # also compute MM-SHAP here
     else:
         shap_values_prediction, mm_score, num_patches_x, nb_text_tokens_pred = tuple_shap_values_prediction
-    shap_values_explanation, mm_score_expl, _ , nb_text_tokens_expl = explain_VLM(input_pred_ask_for_expl, raw_image, model, tokenizer, max_new_tokens=max_new_tokens, p=num_patches_x)
+    shap_values_explanation, mm_score_expl, _ , nb_text_tokens_expl, _, _ = explain_VLM(input_pred_ask_for_expl, raw_image, model, tokenizer, max_new_tokens=max_new_tokens, p=num_patches_x)
 
     scores = compute_cc_shap(shap_values_prediction, shap_values_explanation, tokenizer, num_patches_x, nb_text_tokens_pred, nb_text_tokens_expl, marg_pred=prompt_answer(c_task), marg_expl=pred_ask_for_expl)
     
@@ -238,9 +238,9 @@ def cc_shap_measure(inp_ask_for_prediction, prediction, input_pred_ask_for_expl,
 def mm_shap_measure(inp_ask_for_prediction, raw_image, model, tokenizer, max_new_tokens, tuple_shap_values_prediction=None):
     """ Compute MM-SHAP scores """
     if tuple_shap_values_prediction is None:
-        shap_values_prediction, mm_score, num_patches_x, nb_text_tokens_pred = explain_VLM(inp_ask_for_prediction, raw_image, model, tokenizer, max_new_tokens=max_new_tokens) # also compute MM-SHAP here
+        shap_values_prediction, mm_score, num_patches_x, nb_text_tokens_pred, input_ids, output_ids = explain_VLM(inp_ask_for_prediction, raw_image, model, tokenizer, max_new_tokens=max_new_tokens) # also compute MM-SHAP here
     else:
-        shap_values_prediction, mm_score, num_patches_x, nb_text_tokens_pred = tuple_shap_values_prediction
+        shap_values_prediction, mm_score, num_patches_x, nb_text_tokens_pred, input_ids, output_ids = tuple_shap_values_prediction
 
-    return shap_values_prediction, mm_score, num_patches_x, nb_text_tokens_pred
+    return shap_values_prediction, mm_score, num_patches_x, nb_text_tokens_pred, input_ids, output_ids
 

@@ -92,14 +92,14 @@ if __name__ == '__main__':
         prediction = vlm_predict(inp_ask_for_prediction, raw_image, model, tokenizer, c_task, labels=labels)
         accuracy_sample = evaluate_prediction(prediction, 'A', c_task)
         p_c += accuracy_sample
-        _, mm_score, _, _ = explain_VLM(inp_ask_for_prediction, raw_image, model, tokenizer, max_new_tokens=1)
+        _, mm_score, _, _, _, _ = explain_VLM(inp_ask_for_prediction, raw_image, model, tokenizer, max_new_tokens=1)
         t_shap_c_sum += mm_score
 
         inp_ask_for_prediction = prompt_answer_with_input(formatted_sample_foil, c_task)
         prediction = vlm_predict(inp_ask_for_prediction, raw_image, model, tokenizer, c_task, labels=labels)
         accuracy_sample = evaluate_prediction(prediction, 'B', c_task)
         p_f += accuracy_sample
-        _, mm_score, _, _ = explain_VLM(inp_ask_for_prediction, raw_image, model, tokenizer, max_new_tokens=1)
+        _, mm_score, _, _, _, _ = explain_VLM(inp_ask_for_prediction, raw_image, model, tokenizer, max_new_tokens=1)
         t_shap_f_sum += mm_score
 
     print(f"Ran MM-SHAP non-pairwise on {c_task} {count} samples with model {model_name}. Reporting accuracy and faithfulness percentage.\n")
