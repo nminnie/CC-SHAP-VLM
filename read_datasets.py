@@ -115,7 +115,7 @@ def read_gqa(gqa_path):
         gqa_data = json.load(json_file)
         # print(f'There are {len(gqa_data)} to choose from.')
         # there are 81,434 images. Subsample 300 of them
-        gqa_data = dict(random.sample(sorted(gqa_data.items()), 300))  # 100
+        gqa_data = dict(random.sample(sorted(gqa_data.items()), len(gqa_data)))  # 100
         
         for idx, sample in gqa_data.items():
             # sample = gqa_data['questions'][i]

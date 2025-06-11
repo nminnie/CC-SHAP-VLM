@@ -38,6 +38,7 @@ lang_detector = load_lang_detector()
 
 if __name__ == '__main__':
     res_dict = {}
+    sample_ids = []
     formatted_samples, correct_answers, wrong_answers, image_paths = [], [], [], []
     accuracy = 0
     count = 0
@@ -63,6 +64,7 @@ if __name__ == '__main__':
                 correct_answer = foil["answer"]
             wrong_answer = "impossible to give"
 
+            sample_ids.append(foil_id)
             formatted_samples.append(formatted_sample)
             correct_answers.append(correct_answer)
             wrong_answers.append(wrong_answer)
@@ -71,7 +73,7 @@ if __name__ == '__main__':
             count += 1
 
     print("Done preparing data. Running test...")
-    for k, (formatted_sample, correct_answer, image_path) in enumerate(tqdm(zip(formatted_samples, correct_answers, image_paths), total=num_samples)):
+    for k, (sample_id, formatted_sample, correct_answer, image_path) in enumerate(tqdm(zip(sample_ids, formatted_samples, correct_answers, image_paths), total=num_samples)):
         raw_image = Image.open(image_path) # read image
         if c_task in MULT_CHOICE_DATA.keys():
             labels = LABELS['binary']
@@ -104,6 +106,7 @@ if __name__ == '__main__':
         print("SHAP values:", shap_values_prediction.values.shape)
 
         res_dict[f"{c_task}_{model_name}_{LANG}_{k}"] = {
+            "sample_id": sample_id,
             "image_path": image_path,
             "question": formatted_sample,
             "prompt": inp_ask_for_prediction,
@@ -117,7 +120,8 @@ if __name__ == '__main__':
             "mm_score": mm_score_sample,
             "num_image_patches": num_image_patches,
             "num_text_tokens": num_text_tokens,
-            "shap_values": shap_values_prediction.values.tolist()
+            "shap_values": []
+            # "shap_values": shap_values_prediction.values.tolist()
         }
 
     save_dir = "results"
