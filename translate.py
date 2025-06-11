@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 
+import time
 import sys
 import json
 import torch
@@ -46,6 +47,7 @@ def evaluate_translated_prediction(translated_prediction, correct_answer):
 
 
 def translate_model_preds(model, tokenizer, results_file, src_lang, tgt_lang="en"):
+    accuracy = 0
     with open(results_file) as f:
         results = json.load(f)
 
@@ -59,11 +61,13 @@ def translate_model_preds(model, tokenizer, results_file, src_lang, tgt_lang="en
         translation = translate_text(model, tokenizer, prediction, src_lang, tgt_lang)
         result["translated_prediction"] = translation
 
-        accuracy = evaluate_translated_prediction(translation, correct_answer)
-        result["accuracy"] = accuracy
+        accuracy_sample = evaluate_translated_prediction(translation, correct_answer)
+        result["accuracy"] = accuracy_sample
+        accuracy += accuracy_sample
 
         results[k] = result
 
+    print(f"Accuracy: {accuracy*100/len(results):.2f}")
     return results
 
 
@@ -74,7 +78,10 @@ if __name__ == "__main__":
     results_file = sys.argv[1]
     tgt_lang = "en"
 
+    start_time = time.time()
     translated_results = translate_model_preds(model, tokenizer, results_file, tgt_lang)
+    run_time = time.time() - start_time
+    print(f"\nTranslation ran for {run_time // 3600 % 24:.2f} hours, {run_time // 60 % 60:.2f} minutes, {run_time % 60:.2f} seconds.")
 
     filename = results_file.replace(".json", "_translated.json")
     with open(filename, 'w') as file:
