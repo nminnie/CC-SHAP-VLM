@@ -78,11 +78,13 @@ if __name__ == "__main__":
     results_file = sys.argv[1]
     tgt_lang = "en"
 
+    print(f"Translating predictions from: {results_file}")
     start_time = time.time()
     translated_results = translate_model_preds(model, tokenizer, results_file, tgt_lang)
     run_time = time.time() - start_time
     print(f"\nTranslation ran for {run_time // 3600 % 24:.2f} hours, {run_time // 60 % 60:.2f} minutes, {run_time % 60:.2f} seconds.")
 
     filename = results_file.replace(".json", "_translated.json")
+    print(f"Saving translated predictions to: {filename}")
     with open(filename, 'w') as file:
         json.dump(translated_results, file)
