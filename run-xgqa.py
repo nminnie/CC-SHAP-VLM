@@ -88,8 +88,7 @@ if __name__ == '__main__':
 
         # Generate model response and compute MM-SHAP scores
         shap_values_prediction, mm_score_sample, num_image_patches, num_text_tokens, input_ids, output_ids = mm_shap_measure(inp_ask_for_prediction, raw_image, model, tokenizer, max_new_tokens=MAX_NEW_TOKENS, tuple_shap_values_prediction=None)
-        prediction = tokenizer.decode(output_ids[0], skip_special_tokens=False)
-        prediction = prediction[:-len("</s>")]
+        prediction = tokenizer.decode(output_ids[0], skip_special_tokens=True)
         print("Prediction:", prediction)
 
         # Evaluate model response
@@ -103,7 +102,7 @@ if __name__ == '__main__':
         print("MM score:", mm_score_sample)
         print("Num image patches:", num_image_patches)
         print("Num text tokens:", num_text_tokens)
-        print("SHAP values:", shap_values_prediction.values.shape)
+        # print("SHAP values:", shap_values_prediction.values.shape)
 
         res_dict[f"{c_task}_{model_name}_{LANG}_{k}"] = {
             "sample_id": sample_id,
@@ -111,8 +110,6 @@ if __name__ == '__main__':
             "question": formatted_sample,
             "prompt": inp_ask_for_prediction,
             "correct_answer": correct_answer,
-            "input_ids": input_ids[0].tolist(),
-            "output_ids": output_ids[0].tolist(),
             "prediction": prediction,
             "prediction_lang": prediction_lang,
             "translated_prediction": "",
@@ -120,6 +117,8 @@ if __name__ == '__main__':
             "mm_score": mm_score_sample,
             "num_image_patches": num_image_patches,
             "num_text_tokens": num_text_tokens,
+            "input_ids": input_ids[0].tolist(),
+            "output_ids": output_ids[0].tolist(),
             "shap_values": []
             # "shap_values": shap_values_prediction.values.tolist()
         }
