@@ -17,6 +17,9 @@ elif "llava_mistral" == model_name:
 elif "llava_vicuna" == model_name:
     system_prompt = """A chat between a curious human and an artificial intelligence assistant. The assistant gives helpful, detailed, and polite answers to the human's questions."""
     B_INST_IMG, B_INST, E_INST = f"{system_prompt} USER: <image>\n", "USER:\n", "\nASSISTANT:\n"
+elif "pangea" == model_name:
+    system_prompt = "<|im_start|>system\nYou are a helpful assistant.<|im_end|>"
+    B_INST_IMG, B_INST, E_INST = f"{system_prompt}\n<|im_start|>user\n<image>\n", "", "<|im_end|>\n<|im_start|>assistant\n"
 else:
     raise NotImplementedError(f"Model {model_name} not implemented yet.")
 
@@ -37,6 +40,28 @@ phrase_answer_open_ended = {
     "ru": "Лучший краткий ответ:",
     "zh": "最好的简短答案是："
 }
+
+# phrase_answer_open_ended = {
+#     "bn": "The best short answer in Bengali is:",
+#     "de": "The best short answer in German is:",
+#     "en": "The best short answer in English is:",
+#     "id": "The best short answer in Indonesian is:",
+#     "ko": "The best short answer in Korean is:",
+#     "pt": "The best short answer in Portuguese is:",
+#     "ru": "The best short answer in Russian is:",
+#     "zh": "The best short answer in Chinese is:"
+# }
+
+# phrase_answer_open_ended = {
+#     "bn": "একটি শব্দ বা বাক্যাংশ ব্যবহার করে প্রশ্নের উত্তর দাও।",
+#     "de": "Beantworten Sie die Frage mit einem einzelnen Wort oder Satz.",
+#     "en": "Answer the question using a single word or phrase.",
+#     "id": "Jawablah pertanyaan berikut dengan menggunakan satu kata atau frasa.",
+#     "ko": "한 단어나 문구로 질문에 답하세요.",
+#     "pt": "Responda à questão utilizando uma única palavra ou frase.",
+#     "ru": "Ответьте на вопрос, используя одно слово или фразу.",
+#     "zh": "用一个单词或短语回答问题。"
+# }
 
 def prompt_answer(c_task, lang=None):
     if c_task in OPEN_ENDED_DATA.keys():

@@ -151,11 +151,11 @@ if __name__ == '__main__':
         accuracy += accuracy_sample
         # post-hoc explanation
         input_pred_ask_for_expl = prompt_post_hoc_expl_with_input(formatted_sample, prediction, c_task)
-        input_pred_expl = vlm_generate(input_pred_ask_for_expl, raw_image, model, tokenizer, max_new_tokens=max_new_tokens, repeat_input=True)
+        input_pred_expl = vlm_generate(input_pred_ask_for_expl, raw_image, model, tokenizer, max_new_tokens=MAX_NEW_TOKENS, repeat_input=True)
 
         # for accuracy with CoT: first let the model generate the cot, then the answer.
         input_ask_for_cot = prompt_cot_with_input(formatted_sample, c_task)
-        input_cot = vlm_generate(input_ask_for_cot, raw_image, model, tokenizer, max_new_tokens=max_new_tokens, repeat_input=True)
+        input_cot = vlm_generate(input_ask_for_cot, raw_image, model, tokenizer, max_new_tokens=MAX_NEW_TOKENS, repeat_input=True)
         input_cot_ask_for_pred = prompt_answer_after_cot_with_input(input_cot, c_task)
         prediction_cot = vlm_predict(input_cot_ask_for_pred, raw_image, model, tokenizer, c_task, labels=labels)
         accuracy_cot_sample = evaluate_prediction(prediction_cot, correct_answer, c_task)

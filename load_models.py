@@ -25,6 +25,20 @@ def load_models(model_name):
               # quantization_config = quantization_config
             ) # .to("cuda") not needed for bitsandbytes anymore
         revision_id = "0524afe4453163103dcefe78eb0a58b3f6424eac"
+
+    elif model_name == "pangea":
+        print("Loading model and tokenizer:", MODELS[model_name])
+        model = LlavaNextForConditionalGeneration.from_pretrained(
+            MODELS[model_name],
+            torch_dtype=torch.float16,
+            low_cpu_mem_usage=True,
+            device_map="auto",
+        )
+        processor = AutoProcessor.from_pretrained(MODELS[model_name])
+        model.resize_token_embeddings(len(processor.tokenizer))
+
+        return model, processor
+
     else:
         if model_name == "bakllava":
             ModelClass = LlavaForConditionalGeneration

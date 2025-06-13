@@ -15,6 +15,7 @@ MODELS = {
     'llava_mistral': '/work/tc067/tc067/s2737499/.cache/huggingface/hub/models--llava-hf--llava-v1.6-mistral-7b-hf/snapshots/a1d521368f8d353afa4da2ed2bb1bf646ef1ff5f',
     'llava_vicuna': '/work/tc067/tc067/s2737499/.cache/huggingface/hub/models--llava-hf--llava-v1.6-vicuna-7b-hf/snapshots/0524afe4453163103dcefe78eb0a58b3f6424eac',
     'llama2-13b-chat': 'meta-llama/Llama-2-13b-chat-hf',
+    'pangea': '/work/tc067/tc067/s2737499/.cache/huggingface/hub/models--neulab--Pangea-7B-hf/snapshots/0714be67b05f8ab7517e54985792d01b84669630'
 }
 
 
