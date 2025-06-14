@@ -20,6 +20,8 @@ elif "llava_vicuna" == model_name:
 elif "pangea" == model_name:
     system_prompt = "<|im_start|>system\nYou are a helpful assistant.<|im_end|>"
     B_INST_IMG, B_INST, E_INST = f"{system_prompt}\n<|im_start|>user\n<image>\n", "", "<|im_end|>\n<|im_start|>assistant\n"
+elif "llava_onevision" == model_name:
+    B_INST_IMG, B_INST, E_INST = f"<|im_start|>user <image>\n", "", "<|im_end|><|im_start|>assistant\n"
 else:
     raise NotImplementedError(f"Model {model_name} not implemented yet.")
 
@@ -64,10 +66,13 @@ phrase_answer_open_ended = {
 # }
 
 def prompt_answer(c_task, lang=None):
+    if lang is None:
+        lang = "en"
     if c_task in OPEN_ENDED_DATA.keys():
-        if lang is not None:
+        if model_name in ["pangea", "llava_onevision"]:
+            return f""" {phrase_answer_open_ended[lang]}\n{E_INST if is_chat_model else ''}"""
+        else:
             return f"""{E_INST if is_chat_model else ''}{phrase_answer_open_ended[lang]}\n"""
-        return f"""{E_INST if is_chat_model else ''}{phrase_answer_open_ended["en"]}\n"""
     else:
         return f"""{E_INST if is_chat_model else ''}{phrase_answer_multiple_choice} ("""
     
