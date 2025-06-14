@@ -1,6 +1,6 @@
 import torch
 import time
-from transformers import AutoProcessor, LlavaForConditionalGeneration, LlavaNextForConditionalGeneration
+from transformers import AutoProcessor, LlavaForConditionalGeneration, LlavaNextForConditionalGeneration, LlavaOnevisionForConditionalGeneration
 
 from config import *
 
@@ -36,6 +36,17 @@ def load_models(model_name):
         )
         processor = AutoProcessor.from_pretrained(MODELS[model_name])
         model.resize_token_embeddings(len(processor.tokenizer))
+
+        return model, processor
+
+    elif model_name == "llava_onevision":
+        model = LlavaOnevisionForConditionalGeneration.from_pretrained(
+            MODELS[model_name],
+            torch_dtype=torch.float16,
+            low_cpu_mem_usage=True,
+            device_map="auto",
+        )
+        processor = AutoProcessor.from_pretrained(MODELS[model_name])
 
         return model, processor
 
