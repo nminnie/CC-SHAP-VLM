@@ -1,6 +1,6 @@
 import torch
 import time
-from transformers import AutoProcessor, LlavaForConditionalGeneration, LlavaNextForConditionalGeneration, LlavaOnevisionForConditionalGeneration
+from transformers import AutoProcessor, LlavaForConditionalGeneration, LlavaNextForConditionalGeneration
 
 from config import *
 
@@ -40,6 +40,8 @@ def load_models(model_name):
         return model, processor
 
     elif model_name == "llava_onevision":
+        from transformers import LlavaOnevisionForConditionalGeneration
+
         model = LlavaOnevisionForConditionalGeneration.from_pretrained(
             MODELS[model_name],
             torch_dtype=torch.float16,
