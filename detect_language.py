@@ -13,8 +13,12 @@ def load_lang_detector():
 
 
 def detect_lang(detector, text):
+    # Handle common language detection errors
     if text.strip().lower() == "no":
         return "en"
+    if text.strip().lower() == "ja":
+        return "de"
+
     try:
         language = detector.detect_language_of(text)
         lang_code = language.iso_code_639_1.name.lower()
