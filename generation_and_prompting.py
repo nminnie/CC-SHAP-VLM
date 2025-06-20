@@ -32,38 +32,27 @@ system_prompt_llama = f"{B_SYS}You are a helpful chat assistant and will answer 
 phrase_answer_multiple_choice = "The best answer is:"
 # phrase_answer_open_ended = "The best short answer is:"
 
+# phrase_answer_open_ended = {
+#     "bn": "সবচেয়ে ভালো সংক্ষিপ্ত উত্তর হল:",
+#     "de": "Die beste kurze Antwort ist:",
+#     "en": "The best short answer is:",
+#     "id": "Jawaban singkat terbaiknya adalah:",
+#     "ko": "가장 좋은 짧은 답변은:",
+#     "pt": "A melhor resposta curta é:",
+#     "ru": "Лучший краткий ответ:",
+#     "zh": "最好的简短答案是："
+# }
+
 phrase_answer_open_ended = {
-    "bn": "সবচেয়ে ভালো সংক্ষিপ্ত উত্তর হল:",
-    "de": "Die beste kurze Antwort ist:",
-    "en": "The best short answer is:",
-    "id": "Jawaban singkat terbaiknya adalah:",
-    "ko": "가장 좋은 짧은 답변은:",
-    "pt": "A melhor resposta curta é:",
-    "ru": "Лучший краткий ответ:",
-    "zh": "最好的简短答案是："
+    "bn": "একটি শব্দ বা বাক্যাংশ ব্যবহার করে প্রশ্নের উত্তর দাও।",
+    "de": "Beantworten Sie die Frage mit einem einzelnen Wort oder Satz.",
+    "en": "Answer the question using a single word or phrase.",
+    "id": "Jawablah pertanyaan berikut dengan menggunakan satu kata atau frasa.",
+    "ko": "한 단어나 문구로 질문에 답하세요.",
+    "pt": "Responda à questão utilizando uma única palavra ou frase.",
+    "ru": "Ответьте на вопрос, используя одно слово или фразу.",
+    "zh": "用一个单词或短语回答问题。"
 }
-
-# phrase_answer_open_ended = {
-#     "bn": "The best short answer in Bengali is:",
-#     "de": "The best short answer in German is:",
-#     "en": "The best short answer in English is:",
-#     "id": "The best short answer in Indonesian is:",
-#     "ko": "The best short answer in Korean is:",
-#     "pt": "The best short answer in Portuguese is:",
-#     "ru": "The best short answer in Russian is:",
-#     "zh": "The best short answer in Chinese is:"
-# }
-
-# phrase_answer_open_ended = {
-#     "bn": "একটি শব্দ বা বাক্যাংশ ব্যবহার করে প্রশ্নের উত্তর দাও।",
-#     "de": "Beantworten Sie die Frage mit einem einzelnen Wort oder Satz.",
-#     "en": "Answer the question using a single word or phrase.",
-#     "id": "Jawablah pertanyaan berikut dengan menggunakan satu kata atau frasa.",
-#     "ko": "한 단어나 문구로 질문에 답하세요.",
-#     "pt": "Responda à questão utilizando uma única palavra ou frase.",
-#     "ru": "Ответьте на вопрос, используя одно слово или фразу.",
-#     "zh": "用一个单词或短语回答问题。"
-# }
 
 def prompt_answer(c_task, lang=None):
     if lang is None:

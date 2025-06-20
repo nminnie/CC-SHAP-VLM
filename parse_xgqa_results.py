@@ -4,7 +4,7 @@ from collections import defaultdict
 
 LANG = sys.argv[1]
 
-results_file = f"results/translated_pangea_prompt/xgqa_llava_mistral_{LANG}_200_translated.json"
+results_file = f"results/pangea_1000/xgqa_pangea_{LANG}_1000_translated.json"
 if LANG == "en":
     results_file = results_file.replace("_translated", "")
 with open(results_file, "r") as f:
@@ -28,7 +28,7 @@ for k, result in results.items():
         lang_count += 1
         accuracy_given_lang[accuracy_sample] += 1
 
-n_samples = 200
+n_samples = len(results)
 pred_lang = {k: (v / n_samples * 100) for k, v in pred_lang.items()}
 accuracy = {k: (v / n_samples * 100) for k, v in accuracy.items()}
 accuracy_given_lang = {k: (v / lang_count * 100) for k, v in accuracy_given_lang.items()}

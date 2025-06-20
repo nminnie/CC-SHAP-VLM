@@ -29,7 +29,8 @@ def explain_VLM(prompt, raw_image, model, tokenizer, max_new_tokens=100, p=None)
     inputs = tokenizer(text=prompt, images=raw_image, return_tensors='pt').to("cuda", torch.float16)
     if 'batch_num_images' in inputs:
         inputs.pop('batch_num_images')
-    outputs = model.generate(**inputs, max_new_tokens=max_new_tokens, min_new_tokens=1, do_sample=True)
+    # outputs = model.generate(**inputs, max_new_tokens=max_new_tokens, min_new_tokens=1, do_sample=True)
+    outputs = model.generate(**inputs, max_new_tokens=max_new_tokens, min_new_tokens=1, do_sample=False, temperature=0, top_p=1.0, num_beams=1)
     output_ids = outputs[:, inputs.input_ids.shape[1]:].to('cpu') # select only the output ids without repeating the input again
     inputs.to('cpu')
 
