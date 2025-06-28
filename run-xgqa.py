@@ -104,8 +104,7 @@ if __name__ == '__main__':
         print("Num text tokens:", num_text_tokens)
         # print("SHAP values:", shap_values_prediction.values.shape)
 
-        res_dict[f"{c_task}_{model_name}_{LANG}_{k}"] = {
-            "sample_id": sample_id,
+        res_dict[sample_id] = {
             "image_path": image_path,
             "question": formatted_sample,
             "prompt": inp_ask_for_prediction,
@@ -117,8 +116,8 @@ if __name__ == '__main__':
             "mm_score": mm_score_sample,
             "num_image_patches": num_image_patches,
             "num_text_tokens": num_text_tokens,
-            "input_ids": input_ids[0].tolist(),
-            "output_ids": output_ids[0].tolist(),
+            # "input_ids": input_ids[0].tolist(),
+            # "output_ids": output_ids[0].tolist(),
             "shap_values": []
             # "shap_values": shap_values_prediction.values.tolist()
         }
