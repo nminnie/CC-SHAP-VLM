@@ -31,6 +31,16 @@ def load_translation_model(model_name):
 
 
 def translate_text(model, tokenizer, text, src_lang, tgt_lang="en"):
+    text_lower = text.strip().lower()
+    conditions = [
+        text_lower == "হ্যাঁ" and src_lang == "bn",
+        text_lower == "ya" and src_lang == "id",
+        text_lower == "네" and src_lang == "ko",
+        text_lower == "да" and src_lang == "ru"
+    ]
+    if any(conditions):
+        return "Yes"
+
     tokenizer.src_lang = lang_codes[src_lang]
     inputs = tokenizer(text, return_tensors="pt").to("cuda")
     output = model.generate(**inputs, forced_bos_token_id=tokenizer.lang_code_to_id[lang_codes[tgt_lang]])
@@ -52,9 +62,15 @@ def translate_model_preds(model, tokenizer, results_file, src_lang, tgt_lang="en
         results = json.load(f)
 
     for k, result in results.items():
+        if result["accuracy"] == 1:
+            accuracy += result["accuracy"]
+            continue
+
         prediction = result["prediction"]
         correct_answer = result["correct_answer"]
-        src_lang = result["prediction_lang"]
+
+        if src_lang is None:
+            src_lang = result["prediction_lang"]
 
         if src_lang == "" or src_lang == tgt_lang:
             accuracy += result["accuracy"]
@@ -77,11 +93,12 @@ if __name__ == "__main__":
     model, tokenizer = load_translation_model(model_path)
 
     results_file = sys.argv[1]
+    src_lang = sys.argv[2] if len(sys.argv) > 2 else None
     tgt_lang = "en"
 
-    print(f"Translating predictions from: {results_file}")
+    print(f"Translating predictions from {src_lang} to {tgt_lang}: {results_file}")
     start_time = time.time()
-    translated_results = translate_model_preds(model, tokenizer, results_file, tgt_lang)
+    translated_results = translate_model_preds(model, tokenizer, results_file, src_lang, tgt_lang)
     run_time = time.time() - start_time
     print(f"\nTranslation ran for {run_time // 3600 % 24:.2f} hours, {run_time // 60 % 60:.2f} minutes, {run_time % 60:.2f} seconds.")
 
