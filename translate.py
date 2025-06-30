@@ -66,6 +66,7 @@ def translate_model_preds(model, tokenizer, results_file, src_lang, tgt_lang="en
             accuracy += result["accuracy"]
             continue
 
+        question = result["question"]
         prediction = result["prediction"]
         correct_answer = result["correct_answer"]
 
@@ -75,7 +76,14 @@ def translate_model_preds(model, tokenizer, results_file, src_lang, tgt_lang="en
         if src_lang == "" or src_lang == tgt_lang:
             accuracy += result["accuracy"]
             continue
-        translation = translate_text(model, tokenizer, prediction, src_lang, tgt_lang)
+
+        answer_marker = "Answer: "
+        context = f"Question: {question} | Answer: {prediction}"
+        translation = translate_text(model, tokenizer, context, src_lang, tgt_lang)
+        if answer_marker in translation:
+            translation = translation.split(answer_marker)[-1]
+        else:
+            translation = translate_text(model, tokenizer, prediction, src_lang, tgt_lang)
         result["translated_prediction"] = translation
 
         accuracy_sample = evaluate_translated_prediction(translation, correct_answer)
