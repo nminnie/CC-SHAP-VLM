@@ -116,10 +116,9 @@ if __name__ == '__main__':
             "mm_score": mm_score_sample,
             "num_image_patches": num_image_patches,
             "num_text_tokens": num_text_tokens,
-            # "input_ids": input_ids[0].tolist(),
-            # "output_ids": output_ids[0].tolist(),
-            "shap_values": []
-            # "shap_values": shap_values_prediction.values.tolist()
+            "input_ids": input_ids[0].tolist(),
+            "output_ids": output_ids[0].tolist(),
+            "shap_values": shap_values_prediction.values.tolist()
         }
 
     save_dir = "results"
