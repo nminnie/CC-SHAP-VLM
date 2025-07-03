@@ -54,6 +54,8 @@ def explain_VLM(prompt, raw_image, model, tokenizer, max_new_tokens=100, p=None)
         # find all ids of masked_X where the value is 1 or 32000 since we are not going to mask these special tokens
         if model_name == "llava_vicuna":
             condition = (masked_X == 1) | (masked_X == 32000) | (masked_X == 29871)
+        elif model_name == "pangea" or model_name == "llava_onevision":
+            condition = torch.isin(masked_X, torch.tensor([151644, 151645, 151646]))
         else: # bakllava and llava_mistral specific
             condition = (masked_X == 1) | (masked_X == 32000) | (masked_X == 28705)
         indices = torch.nonzero(condition, as_tuple=False)
@@ -69,6 +71,8 @@ def explain_VLM(prompt, raw_image, model, tokenizer, max_new_tokens=100, p=None)
         text_mask[:, :-nb_text_tokens] = True # do not do anything to image tokens anymore
         if model_name == "llava_vicuna":
             masked_X[~text_mask] = 903
+        elif model_name == "pangea" or model_name == "llava_onevision":
+            masked_X[~text_mask] = 220
         else: # bakllava and llava_mistral specific
             masked_X[~text_mask] = 583
         return masked_X#.unsqueeze(0)
@@ -90,7 +94,12 @@ def explain_VLM(prompt, raw_image, model, tokenizer, max_new_tokens=100, p=None)
             for i in range(input_ids.shape[0]):
                 # here the actual masking of the image is happening. The custom masker only specified which patches to mask, but no actual masking has happened
                 masked_inputs = copy.deepcopy(inputs) # initialize the thing
-                masked_inputs['input_ids'] = input_ids[i].unsqueeze(0)
+                if model_name == "pangea" or model_name == "llava_onevision":
+                    text_ids = input_ids[i].tolist()
+                    restored_text_ids = text_ids[:start] + [image_token] * count + text_ids[start:]
+                    masked_inputs['input_ids'] = torch.tensor([restored_text_ids])
+                else:
+                    masked_inputs['input_ids'] = input_ids[i].unsqueeze(0)
 
                 if model_name != "bakllava":
                     raw_image_arr = np.array(raw_image)
@@ -115,11 +124,36 @@ def explain_VLM(prompt, raw_image, model, tokenizer, max_new_tokens=100, p=None)
                 
                 masked_inputs.to("cuda", torch.float16)
                 # # generate outputs and logits
-                out = model.generate(**masked_inputs, max_new_tokens=max_new_tokens,do_sample=False, output_logits=True, output_scores=True, return_dict_in_generate=True)
+                out = model.generate(
+                    **masked_inputs, max_new_tokens=max_new_tokens, min_new_tokens=1,
+                    do_sample=False, temperature=0, top_p=1.0, num_beams=1,
+                    output_logits=True, output_scores=True, return_dict_in_generate=True
+                )
                 logits = out.logits[0].detach().cpu().numpy()
                 # extract only logits corresponding to target sentence ids
+
                 result[i] = logits[0, output_ids]
         return result
+
+    if model_name == "pangea" or model_name == "llava_onevision":
+        input_ids = inputs.input_ids
+        print("Original input_ids:", input_ids.shape)
+        ids = input_ids[0].tolist()
+        image_token = 151646
+        start = None
+        count = 0
+        new_ids = []
+        for i, tok in enumerate(ids):
+            if tok == image_token:
+                if start is None:
+                    start = len(new_ids)  # where to reinsert
+                count += 1
+            else:
+                new_ids.append(tok)
+        print(f"start={start}, count={count}")
+        text_token_ids = torch.tensor([new_ids])
+        inputs["input_ids"] = text_token_ids
+        print("Filtered input_ids:", text_token_ids.shape)
 
     nb_text_tokens = inputs.input_ids.shape[1] # number of text tokens
     if p is None: # calculate the sqrt(number) of patches needed to cover the image
@@ -130,6 +164,7 @@ def explain_VLM(prompt, raw_image, model, tokenizer, max_new_tokens=100, p=None)
 
     # make a combination between tokens and pixel_values (transform to patches first)
     X = torch.cat((image_token_ids, inputs.input_ids), 1).unsqueeze(1)
+    print(f"nb_text_tokens={nb_text_tokens}, p={p}, patch_size={patch_size}, X.shape={X.shape}")
     try:
         explainer = shap.Explainer(get_model_prediction, custom_masker, silent=True, max_evals=300)
         shap_values = explainer(X)[0]
