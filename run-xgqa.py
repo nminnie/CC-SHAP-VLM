@@ -33,13 +33,17 @@ save_json = int(sys.argv[4])
 data_root = sys.argv[5]
 LANG = sys.argv[6]
 
+dimension = "structural"
+structural_type = "verify"
+
 model, tokenizer = load_models(model_name)
 lang_detector = load_lang_detector()
 
 if __name__ == '__main__':
     res_dict = {}
     sample_ids = []
-    formatted_samples, correct_answers, wrong_answers, image_paths = [], [], [], []
+    formatted_samples, correct_answers, image_paths = [], [], []
+    structural_types, semantic_types = [], []
     accuracy = 0
     count = 0
     mm_score = 0
@@ -53,6 +57,8 @@ if __name__ == '__main__':
         qa_path = f"{data_root}{OPEN_ENDED_DATA[c_task][1]}"
         vqa_data = read_data(c_task, qa_path, images_path, data_root)
         for foil_id, foil in tqdm(vqa_data.items()):  # tqdm
+            if foil[dimension] != structural_type:
+                continue
             if count + 1 > num_samples:
                 break
             test_img_path = os.path.join(images_path, foil["image_file"])
@@ -62,18 +68,18 @@ if __name__ == '__main__':
                 correct_answer = foil["answers"] # there are multiple answers annotations
             else:
                 correct_answer = foil["answer"]
-            wrong_answer = "impossible to give"
 
             sample_ids.append(foil_id)
             formatted_samples.append(formatted_sample)
             correct_answers.append(correct_answer)
-            wrong_answers.append(wrong_answer)
             image_paths.append(test_img_path)
+            structural_types.append(foil["structural"])
+            semantic_types.append(foil["semantic"])
 
             count += 1
 
     print("Done preparing data. Running test...")
-    for k, (sample_id, formatted_sample, correct_answer, image_path) in enumerate(tqdm(zip(sample_ids, formatted_samples, correct_answers, image_paths), total=num_samples)):
+    for k, (sample_id, formatted_sample, correct_answer, image_path, structural_type, semantic_type) in enumerate(tqdm(zip(sample_ids, formatted_samples, correct_answers, image_paths, structural_types, semantic_types), total=num_samples)):
         raw_image = Image.open(image_path) # read image
         if c_task in MULT_CHOICE_DATA.keys():
             labels = LABELS['binary']
@@ -108,6 +114,8 @@ if __name__ == '__main__':
             "image_path": image_path,
             "question": formatted_sample,
             "prompt": inp_ask_for_prediction,
+            "structural": structural_type,
+            "semantic": semantic_type,
             "correct_answer": correct_answer,
             "prediction": prediction,
             "prediction_lang": prediction_lang,
@@ -121,11 +129,11 @@ if __name__ == '__main__':
             "shap_values": shap_values_prediction.values.tolist()
         }
 
-    save_dir = "results"
+    save_dir = "results_mm"
     if save_json:
         if not os.path.exists(save_dir):
             os.makedirs(save_dir)
-        with open(f"{save_dir}/{c_task}_{model_name}_{LANG}_{count}.json", 'w') as file:
+        with open(f"{save_dir}/{c_task}_{model_name}_{LANG}_{structural_type}_{count}.json", 'w') as file:
             json.dump(res_dict, file)
 
     print(f"Ran {TESTS} on {c_task}-{LANG} {count} samples with model {model_name}. Reporting results.\n")

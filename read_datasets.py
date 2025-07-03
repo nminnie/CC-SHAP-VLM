@@ -131,6 +131,8 @@ def read_gqa(gqa_path):
                                'image_file': f'{sample["imageId"]}.jpg',
                                'caption': question,
                                'answer': answer,
+                               'structural': sample['types']['structural'],
+                               'semantic': sample['types']['semantic'],
                                # 'foils': [foil['caption']],
                                # 'classes': foil['target_word'],
                                # 'classes_foil': foil['foil_word'],
