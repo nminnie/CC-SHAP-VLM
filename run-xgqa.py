@@ -34,7 +34,7 @@ data_root = sys.argv[5]
 LANG = sys.argv[6]
 
 dimension = "structural"
-structural_type = "verify"
+structural = sys.argv[7]
 
 model, tokenizer = load_models(model_name)
 lang_detector = load_lang_detector()
@@ -57,7 +57,7 @@ if __name__ == '__main__':
         qa_path = f"{data_root}{OPEN_ENDED_DATA[c_task][1]}"
         vqa_data = read_data(c_task, qa_path, images_path, data_root)
         for foil_id, foil in tqdm(vqa_data.items()):  # tqdm
-            if foil[dimension] != structural_type:
+            if foil[dimension] != structural:
                 continue
             if count + 1 > num_samples:
                 break
@@ -129,7 +129,7 @@ if __name__ == '__main__':
             "shap_values": shap_values_prediction.values.tolist()
         }
 
-    save_dir = "results_mm"
+    save_dir = "results_llava"
     if save_json:
         if not os.path.exists(save_dir):
             os.makedirs(save_dir)
