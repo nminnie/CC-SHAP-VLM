@@ -119,7 +119,7 @@ def explain_VLM(prompt, raw_image, model, tokenizer, max_new_tokens=100, p=None)
                         else:
                             raw_image_array[m*patch_size:(m+1)*patch_size, n*patch_size:(n+1)*patch_size, :] = 0
                 if model_name != "bakllava":
-                    masked_pixel_vals = tokenizer(prompt, raw_image_array, return_tensors='pt').pixel_values
+                    masked_pixel_vals = tokenizer(text=prompt, images=raw_image_array, return_tensors='pt').pixel_values
                     masked_inputs["pixel_values"] = masked_pixel_vals
                 
                 masked_inputs.to("cuda", torch.float16)

@@ -129,7 +129,7 @@ if __name__ == '__main__':
             "shap_values": shap_values_prediction.values.tolist()
         }
 
-    save_dir = "results_llava"
+    save_dir = "results"
     if save_json:
         if not os.path.exists(save_dir):
             os.makedirs(save_dir)
