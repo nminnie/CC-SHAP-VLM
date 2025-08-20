@@ -78,6 +78,14 @@ if __name__ == '__main__':
 
             count += 1
 
+    # Uncomment to apply permutation to input images
+    # random.seed(42)
+    # random.shuffle(image_paths)
+
+    # Uncomment to apply permutation to input texts
+    # random.seed(42)
+    # random.shuffle(formatted_samples)
+
     print("Done preparing data. Running test...")
     for k, (sample_id, formatted_sample, correct_answer, image_path, structural_type, semantic_type) in enumerate(tqdm(zip(sample_ids, formatted_samples, correct_answers, image_paths, structural_types, semantic_types), total=num_samples)):
         raw_image = Image.open(image_path) # read image
@@ -108,7 +116,6 @@ if __name__ == '__main__':
         print("MM score:", mm_score_sample)
         print("Num image patches:", num_image_patches)
         print("Num text tokens:", num_text_tokens)
-        # print("SHAP values:", shap_values_prediction.values.shape)
 
         res_dict[sample_id] = {
             "image_path": image_path,
@@ -133,7 +140,7 @@ if __name__ == '__main__':
     if save_json:
         if not os.path.exists(save_dir):
             os.makedirs(save_dir)
-        with open(f"{save_dir}/{c_task}_{model_name}_{LANG}_{structural_type}_{count}.json", 'w') as file:
+        with open(f"{save_dir}/{c_task}_{model_name}_{LANG}_{structural}_{count}.json", 'w') as file:
             json.dump(res_dict, file)
 
     print(f"Ran {TESTS} on {c_task}-{LANG} {count} samples with model {model_name}. Reporting results.\n")
