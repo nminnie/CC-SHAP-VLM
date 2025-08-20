@@ -12,7 +12,6 @@ results_json/*
 results_json_valse/*
 results_mm-shap_helix/*
 results*/
-*.slurm
 *.out
 data/
 nvidia-smi*.txt
