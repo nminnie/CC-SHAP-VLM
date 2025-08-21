@@ -26,7 +26,7 @@ For example, `python run-xgqa.py xgqa llava_onevision 20 1 data/ zh query`
 ## Credits
 The Shapley value implementation in the `shap` folder is a modified version of https://github.com/slundberg/shap .
 
-## To cite the original methods and dataset
+## Cite the original methods and dataset
 ```bibtex
 @inproceedings{parcalabescu2025do,
     title={Do Vision \& Language Decoders use Images and Text equally? How Self-consistent are their Explanations?},
@@ -46,7 +46,9 @@ The Shapley value implementation in the `shap` folder is a modified version of h
   pages={21630--21643},
   year={2021}
 }
+```
 
+```bibtex
 @article{pfeiffer2021xgqa,
   title={xGQA: Cross-lingual visual question answering},
   author={Pfeiffer, Jonas and Geigle, Gregor and Kamath, Aishwarya and Steitz, Jan-Martin O and Roth, Stefan and Vuli{\'c}, Ivan and Gurevych, Iryna},
