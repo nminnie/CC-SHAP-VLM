@@ -10,9 +10,8 @@ t_shap_scores = []
 with open(results_file, "r") as f:
     results = json.load(f)
 
+# Extract MM-SHAP scores corresponding to the first output token
 for sample_id, result in results.items():
-    if result["accuracy"] == 1: # incorrect cases (skip correct)
-        continue
     shap_values = np.array(result["shap_values"])
     p = int(result["num_image_patches"])
     img_length = p**2

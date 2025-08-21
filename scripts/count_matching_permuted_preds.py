@@ -4,25 +4,23 @@ import sys
 lang = sys.argv[1]
 
 # File paths
-# baseline_path = f"results_perceptual_compare/xgqa_pangea_{lang}_compare_589.json"
-# img_path = f"results_perceptual_compare/xgqa_pangea_{lang}_compare_589_img_rnd.json"
-# text_path = f"results_perceptual_compare/xgqa_pangea_{lang}_compare_589_text_rnd.json"
+baseline_path = f"results_perceptual_compare/xgqa_pangea_{lang}_compare_589.json"
+img_path = f"results_perceptual_compare/xgqa_pangea_{lang}_compare_589_img_rnd.json"
+text_path = f"results_perceptual_compare/xgqa_pangea_{lang}_compare_589_text_rnd.json"
 
-baseline_path = f"results_ov_perceptual_compare/xgqa_llava_onevision_{lang}_compare_589_translated.json"
-img_path = f"results_ov_perceptual_compare/xgqa_llava_onevision_{lang}_compare_589_img_rnd_translated.json"
-text_path = f"results_ov_perceptual_compare/xgqa_llava_onevision_{lang}_compare_589_text_rnd_translated.json"
-
-# Load all files
+# Load results with no permutation
 with open(baseline_path, 'r') as f:
     baseline_data = json.load(f)
 
+# Load results with permuted images
 with open(img_path, 'r') as f:
     img_data = json.load(f)
 
+# Load results with permuted texts
 with open(text_path, 'r') as f:
     text_data = json.load(f)
 
-# Helper function to count prediction matches
+# Function to count matching predictions
 def count_matches(baseline, comparison):
     match_count = 0
     total_count = 0
@@ -40,11 +38,10 @@ def count_matches(baseline, comparison):
 
     return match_count, total_count
 
-# Compare baseline to img and text
+# Compare baseline to image and text
 match_img, total_img = count_matches(baseline_data, img_data)
 match_text, total_text = count_matches(baseline_data, text_data)
 
-# Report
+# Report counts of matching cases
 print(f"Both vs Image-Rnd: {match_img}/{total_img} predictions match")
 print(f"Both vs Text-Rnd: {match_text}/{total_text} predictions match")
-
