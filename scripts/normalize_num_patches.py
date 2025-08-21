@@ -18,7 +18,6 @@ for sample_id, result in results.items():
 
     image_contrib = np.abs(shap_values[0, :img_length, :]).sum() / img_length
     text_contrib = np.abs(shap_values[0, img_length:, :]).sum() / text_length
-    print(image_contrib, text_contrib)
     text_score = text_contrib / (text_contrib + image_contrib)
 
     t_shap_scores.append(text_score)
